@@ -1,5 +1,5 @@
 ---
-title: 'Distributed training technologies for Transformers'
+title: 'Distributed training technologies for Transformers: Overview'
 description: Understand different distributed training strategies for LLMs.
 author: SKRohit
 date: 2024-08-28 13:55:00 +0530
@@ -19,7 +19,6 @@ These models are also trained on vast datasets containing trillions of tokens, n
 - Model/Tensor Parallelism
 - Pipeline Parallelism
 - Pytorch's Fully Sharded Data Parallel
-
 
 ### Distributed Data Parallel
 Distributed Data Parallel is the most common strategy for parallel training. In DDP, the model is replicated across multiple GPUs (in seperate processes), with each GPU handling a different mini-batch of data. The gradients are calculated independently on each device. And as soon as gradients are ready it triggers the hook on pytorch tensor to synchronize gradients using the `AllReduce`. This approach efficiently utilizes multiple GPUs and reduces idle time by overlapping gradient synchronization with backward calculation. After gradient's synchronization optimizer updates the model weight's locally. This [design note](https://pytorch.org/docs/master/notes/ddp.html) on DDP is very helpful in understanding it better.
