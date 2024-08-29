@@ -1,10 +1,10 @@
 ---
 title: 'Distributed training technologies for Transformers: Overview'
-description: Understand different distributed training strategies for LLMs.
-date: 2024-08-28 13:55:00 +0530
+description: A brief summary of different distributed training strategies used to train LLMs.
+date: 2024-08-30 00:55:00 +0530
 author: skrohit
 categories: [distributed-training]
-tags: [llms, deep learning, deepspeed, pytorch, transformers]
+tags: [llms, tensor parallelism, pipeline parallelism, ZeRO, fsdp, transformers]
 pin: true
 ---
 
