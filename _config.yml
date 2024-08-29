@@ -35,7 +35,7 @@ social:
   # Change to your full name.
   # It will be displayed as the default author of the posts and the copyright owner in the Footer
   name: SKRohit
-  email: example@domain.com # change to your email address
+  email: rohitku.singh8@gmail.com # change to your email address
   links:
     # The first element serves as the copyright owner's link
     - https://twitter.com/singhkrrohit # change to your Twitter homepage
@@ -102,7 +102,7 @@ avatar: "/assets/images/another_dp.jpeg"
 
 # The URL of the site-wide social preview image used in SEO `og:image` meta tag.
 # It can be overridden by a customized `page.image` in front matter.
-social_preview_image: # string, local or CORS resources
+social_preview_image: "/assets/images/another_dp.jpeg" # string, local or CORS resources
 
 # boolean type, the global switch for TOC in posts.
 toc: true
