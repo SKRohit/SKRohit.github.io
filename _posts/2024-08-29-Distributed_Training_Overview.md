@@ -2,6 +2,7 @@
 title: 'Distributed training technologies for Transformers: Overview'
 description: Understand different distributed training strategies for LLMs.
 date: 2024-08-28 13:55:00 +0530
+author: skrohit
 categories: [distributed-training]
 tags: [llms, deep learning, deepspeed, pytorch, transformers]
 pin: true
