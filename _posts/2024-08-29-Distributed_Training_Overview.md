@@ -1,7 +1,6 @@
 ---
-title: "Distributed training technologies for Transformers: Overview"
-description: >-
-  Understand different distributed training strategies for LLMs.
+title: 'Distributed training technologies for Transformers: Overview'
+description: Understand different distributed training strategies for LLMs.
 author: SKRohit
 date: 2024-08-29 20:55:00 +0800
 categories: [distributed-training]
