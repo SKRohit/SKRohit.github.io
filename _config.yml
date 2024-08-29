@@ -19,7 +19,7 @@ title: Incomplete # the main title
 tagline: SKRohit's Blog # it will display as the subtitle
 
 description: >- # used by seo meta and the atom feed
-  A tech blog discussing machine learning, deep learning, large language models and vision language models.
+  A tech blog discussing latest topics on machine learning, deep learning, AI, large language models and vision language models.
 
 # Fill in the protocol & hostname for your site.
 # E.g. 'https://username.github.io', note that it does not end with a '/'.
@@ -34,15 +34,15 @@ twitter:
 social:
   # Change to your full name.
   # It will be displayed as the default author of the posts and the copyright owner in the Footer
-  name: SKRohit
+  name: Rohit Singh
   email: rohitku.singh8@gmail.com # change to your email address
   links:
     # The first element serves as the copyright owner's link
-    - https://twitter.com/singhkrrohit # change to your Twitter homepage
     - https://github.com/SKRohit # change to your GitHub homepage
+    - https://twitter.com/singhkrrohit # change to your Twitter homepage
     # Uncomment below to add more social links
     # - https://www.facebook.com/username
-    # - https://www.linkedin.com/in/username
+    - https://www.linkedin.com/in/skrrohit
 
 # Site Verification Settings
 webmaster_verifications:
