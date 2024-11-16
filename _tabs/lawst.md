@@ -9,14 +9,14 @@ order: 4
 
 {% include embed/youtube.html id='FxAfHz9jWrw' %}
 
-LawstIN Legal (LiL) is a product for lawyers for performing legal research, analysis, and drafting. It is an integrated tool where lawyers can 
+LawstIN Legal (LiL) is a product for lawyers to perform legal research, analysis, and drafting. It is an integrated tool where lawyers can 
 - find judgements though semantic search
 - draft their notes as they go through the judgments found during search
-- take help of integrated ai legal assistant in analysing their drafts, 
-- generating summary of judgments, 
-- compare cases to find the relevant one to use in their argument
-- explain legal jargons or laws 
-- sort judgements' search result based on relevancy score given by legal assistant. 
+- take help of integrated AI legal assistant in analysing their drafts, 
+- generating AI summary of judgments, 
+- to compare cases to find the relevant one to use in their argument
+- use AI to explain legal jargons or laws 
+- sort judgements' search result based on relevancy score given by the legal assistant. 
 
 For every case a lawyer is working on, they can create sessions with relevant info about the case, which helps the search engine and legal assistant in providing 
 - better answers
@@ -31,7 +31,7 @@ The goal of LiL is to
 - aid in framing strong legal arguments 
 - use past cases lawyer has worked on to improve their research and drafting experience. 
 
-All these feature integrated into one tool, accessible anytime with sleek user experience is going be our USP. We are attaching a sample demo.
+All these feature integrated into one tool, accessible anytime with sleek user experience is  our USP. Feel free to reach out to us for any other info, on contact details mentioned below.
 
 
 
