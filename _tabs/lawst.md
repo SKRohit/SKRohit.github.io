@@ -5,7 +5,10 @@ order: 4
 ---
 
 
-# LawstIN Legal
+# LawstIN Legal Demo
+
+{% include embed/{youtube}.html id='{FxAfHz9jWrw}' %}
+
 
 **From legal chaos to clarity: Research smarter, not harder.**
 
@@ -103,5 +106,3 @@ We believe a tool like this can be engineered to become the preferred choice for
 - **Dinesh Singh**: Product Engineer @Workduck. [Website](https://dineshsingh.in/), [Github](https://github.com/dineshsingh1), [Email](mailto:dineshsingh9375@gmail.com)
     - Dinesh, a full stack developer, lead product development at multiple startups from ground up as a founding member.
     - Contact No: +91-8221906939
-
-###
