@@ -5,7 +5,9 @@ order: 4
 ---
 
 
-# LawstIN Legal
+# LawstIN Legal Demo
+
+{% include embed/youtube.html id='FxAfHz9jWrw' %}
 
 LawstIN Legal (LiL) is a product for lawyers for performing legal research, analysis, and drafting. It is an integrated tool where lawyers can 
 - find judgements though semantic search
@@ -30,10 +32,6 @@ The goal of LiL is to
 - use past cases lawyer has worked on to improve their research and drafting experience. 
 
 All these feature integrated into one tool, accessible anytime with sleek user experience is going be our USP. We are attaching a sample demo.
-
-## Demo Video
-
-{% include embed/youtube.html id='FxAfHz9jWrw' %}
 
 
 
