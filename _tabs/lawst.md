@@ -7,7 +7,7 @@ order: 4
 
 # LawstIN Legal Demo
 
-{% include embed/youtube.html id='Balreaj8Yqs' %}
+{% include embed/youtube.html id='FxAfHz9jWrw' %}
 
 
 **From legal chaos to clarity: Research smarter, not harder.**
