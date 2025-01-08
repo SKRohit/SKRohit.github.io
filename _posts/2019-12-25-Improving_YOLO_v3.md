@@ -18,7 +18,7 @@ We will look at them one by one. Let's dig into it.
 _Source YOLOv3 Paper_
 
 ## Different Training Heuristics for Object Detection
-The performance of image classification networks has improved a lot with the use of refined training procedures. A brief discussion of these training tricks can be found [here](http://openaccess.thecvf.com/content_CVPR_2019/papers/He_Bag_of_Tricks_for_Image_Classification_with_Convolutional_Neural_Networks_CVPR_2019_paper.pdf) from CPVR 2019. Similarly, for object detection networks, some have suggested different training heuristics (1), like:
+The performance of image classification networks has improved a lot with the use of refined training procedures. A brief discussion of these training tricks can be found [here](https://openaccess.thecvf.com/content_CVPR_2019/papers/He_Bag_of_Tricks_for_Image_Classification_with_Convolutional_Neural_Networks_CVPR_2019_paper.pdf) from CPVR 2019. Similarly, for object detection networks, some have suggested different training heuristics (1), like:
 
 - Image mix-up with geometry preserved alignment
 - Using cosine learning rate scheduler
