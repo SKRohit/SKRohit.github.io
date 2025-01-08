@@ -3,6 +3,7 @@ title: 'How to Improve YOLOv3'
 description: YOLO has been a very popular and fast object detection algorithm, but unfortunately not the best-performing. In this article I will highlight simple training heuristics and small architectural changes that can make YOLOv3 perform better than models like Faster R-CNN and Mask R-CNN.
 date: 2019-12-25 00:55:00 +0530
 author: skrohit
+media_subpath: ../assets/improve_yolov3/
 categories: [computer-vision]
 tags: [yolo, deep-learning, object detection]
 pin: true
@@ -14,7 +15,7 @@ YOLOv3 is a popular and fast object detection algorithm, but unfortunately not a
 
 We will look at them one by one. Let's dig into it.
 
-![YOLOv3 Paper](../assets/improve_yolov3/yolov3_table.png)
+![YOLOv3 Paper](yolov3_table.png)
 _Source YOLOv3 Paper_
 
 ## Different Training Heuristics for Object Detection
@@ -31,10 +32,10 @@ These modifications improved the mAP@(.5:.9) score of YOLOv3 from 33.0 to 37.0 w
 ### Image_Mixup
 Let's start with [mixup](https://arxiv.org/abs/1710.09412) training. In image classification networks, image mixup is just the linear interpolation of the pixels of two images (e.g. the left image below). The distribution of blending ratio in the mixup algorithm for image classification is drawn from a [beta distribution](https://en.wikipedia.org/wiki/Beta_distribution), B(0.2, 0.2), which is also used to mix up one-hot image labels using the same ratio. For performing the mix-up both images have to be of the same dimensions so they are generally resized, however this would require bounding boxes of objects present in images to be resized as well. To avoid this hassle, a new image mix-up strategy is used. It takes an image of max width and max height out of the two images, with pixel values equal to 0 to 255, and adds the linear interpolation of two images to it. For this mixup strategy, blending ratios were obtained from the beta distribution B(1.5, 1.5) because (1) found that for object detection B(1.5, 1.5) gives a visually coherent mixed-up image and empirically better mAP score. Object labels are merged as a new array. This is demonstrated below. Now we have one method of mixup for image classification, and another for object detection.
 
-![Mixup Classification](../assets/improve_yolov3/mixup-example-classification.png)
+![Mixup Classification](mixup-example-classification.png)
 _Image Classification Mixup_
 
-![Mixup Object Detection](../assets/improve_yolov3/obj_det_mixup.png)
+![Mixup Object Detection](obj_det_mixup.png)
 _Object Detection Mixup_
 
 Natural co-occurrence of objects in training images plays a significant role in the performance of object detection networks. For instance, a bowl, a cup, and a refrigerator should appear together more frequently than a refrigerator and an elephant. This makes detecting an object outside of its typical environment difficult. Using image mixup with an increased blending ratio makes the network more robust to such detection problems. Mixup also acts as a regularizer and forces the network to favor simple linear behavior.
@@ -59,19 +60,13 @@ _Image Mixup Code_
 ### Learning Rate Scheduler
 Most of the popular object detection networks (Faster RCNN, YOLO, etc.) use a learning rate scheduler. According to (1), the resulting sharp learning rate transition may cause the optimizer to re-stabilize the learning momentum in the following iterations. Using a cosine scheduler (where the learning rate decreases slowly) with proper warmup (two epochs) can give even better validation accuracy than using a step scheduler, shown below.
 
-![Step vs Cosine Scheduler](../assets/improve_yolov3/cosine_scheduler.png)
+![Step vs Cosine Scheduler](cosine_scheduler.png){: .left }
 _Comparison of step scheduler vs cosine scheduler on the PASCAL VOC 2007 test set_ [source](https://arxiv.org/abs/1902.04103)
-
-> Note: Forward and backward operations doesn't change between DDP and ZeRO in the sense that each GPU performs its own forward and backward in parallel. Main difference lies in the way tensors are stored and communicated to perform parameter updates.
-{: .prompt-tip }
-
-
 
 ### Classification Head Label Smoothing
 In label smoothing we convert our one-hot encoded labels to a smooth probability distribution using:
 
-![Label Smoothing Formula](../assets/improve_yolov3/label_smoothing.png)
-
+![Label Smoothing Formula](label_smoothing.png){: .left }
 _[source](https://arxiv.org/abs/1902.04103)_
 
 Where K is the number of classes, ε is a small constant, and q is the ground truth distribution. This acts as a regularizer by reducing the model’s confidence.
@@ -218,7 +213,7 @@ To understand this better we will look at the two important steps of this approa
 1) Identical Rescaling and 
 2) Adaptive Feature Fusion.
 
-![ASFF](../assets/improve_yolov3/asff.png)
+![ASFF](asff.png)
 _Illustration of Adaptive Spatial Fusion of Feature Pyramids ([source](https://arxiv.org/abs/1911.09516))_
 
 ### Identical Rescaling
@@ -302,13 +297,13 @@ _Performs upscaling or downscaling given the level number and set of features_
 
 Once features are rescaled, they are combined by taking the weighted average of each pixel of all three rescaled feature maps (assuming the same weight across all channels). These weights are learned dynamically as we train the network. This equation can explain it better:
 
-![Asff Equation](../assets/improve_yolov3/asff_eq.png)
+![Asff Equation](asff_eq.png)
 _[source](https://arxiv.org/abs/1911.09516)_
 
-![Asff Eq Details](../assets/improve_yolov3/asff_eq_exp-3.png)
+![Asff Eq Details](asff_eq_exp-3.png)
 _[source](https://arxiv.org/abs/1911.09516)_
 
-![Asff Eq More Details](../assets/improve_yolov3/asff_eq_more_exp-2.png)
+![Asff Eq More Details](asff_eq_more_exp-2.png)
 _[source](https://arxiv.org/abs/1911.09516)_
 
 Here these operations are defined in PyTorch.
