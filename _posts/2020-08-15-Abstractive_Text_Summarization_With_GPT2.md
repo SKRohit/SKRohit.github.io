@@ -73,7 +73,7 @@ _[source](https://dl.acm.org/doi/10.5555/944919.944966)_
 ![Language Model Equation](../assets/gpt2_text_sum/lang_model_desc.png)
 _[source](https://dl.acm.org/doi/10.5555/944919.944966)_
 
-GPT/GPT-2 is a variant of the Transformer model which only has the decoder part of the Transformer network. It uses multi-headed masked self-attention, which allows it to look at only the first i tokens at time step t, and enables them to work like traditional uni-directional language models. However, instead of processing tokens sequentially like RNNs, these models [process tokens in parallel](http://jalammar.github.io/illustrated-gpt2/), i.e. by predicting tokens for all time steps at once. Such models can be represented by:
+GPT/GPT-2 is a variant of the Transformer model which only has the decoder part of the Transformer network. It uses multi-headed masked self-attention, which allows it to look at only the first i tokens at time step t, and enables them to work like traditional uni-directional language models. However, instead of processing tokens sequentially like RNNs, these models [process tokens in parallel](https://jalammar.github.io/illustrated-gpt2/), i.e. by predicting tokens for all time steps at once. Such models can be represented by:
 
 ![GPT Model](../assets/gpt2_text_sum/gpt_model.png)
 _[source](https://s3-us-west-2.amazonaws.com/openai-assets/research-covers/language-unsupervised/language_understanding_paper.pdf)_
@@ -199,7 +199,7 @@ def top_k_top_p_filtering(logits, top_k=0, top_p=0.0, filter_value=-float('Inf')
             logits: logits distribution shape (vocabulary size)
             top_k > 0: keep only top k tokens with highest probability (top-k filtering).
             top_p > 0.0: keep the top tokens with cumulative probability >= top_p (nucleus filtering).
-                Nucleus filtering is described in Holtzman et al. (http://arxiv.org/abs/1904.09751)
+                Nucleus filtering is described in Holtzman et al. (https://arxiv.org/abs/1904.09751)
         From: https://gist.github.com/thomwolf/1a5a29f6962089e871b94cbd09daf317
     """
     assert logits.dim() == 1  # batch size 1 for now - could be updated for more but the code would be less clear
