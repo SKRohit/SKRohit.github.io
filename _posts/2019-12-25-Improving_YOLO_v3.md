@@ -59,13 +59,13 @@ _Image Mixup Code_
 ### Learning Rate Scheduler
 Most of the popular object detection networks (Faster RCNN, YOLO, etc.) use a learning rate scheduler. According to (1), the resulting sharp learning rate transition may cause the optimizer to re-stabilize the learning momentum in the following iterations. Using a cosine scheduler (where the learning rate decreases slowly) with proper warmup (two epochs) can give even better validation accuracy than using a step scheduler, shown below.
 
-![Step vs Cosine Scheduler](../assets/improve_yolov3/cosine_scheduler.png){: .left }
+![Step vs Cosine Scheduler](../assets/improve_yolov3/cosine_scheduler.png)
 _Comparison of step scheduler vs cosine scheduler on the PASCAL VOC 2007 test set_ [source](https://arxiv.org/abs/1902.04103)
 
 ### Classification Head Label Smoothing
 In label smoothing we convert our one-hot encoded labels to a smooth probability distribution using:
 
-![Label Smoothing Formula](../assets/improve_yolov3/label_smoothing.png){: .left }
+![Label Smoothing Formula](../assets/improve_yolov3/label_smoothing.png)
 _[source](https://arxiv.org/abs/1902.04103)_
 
 Where K is the number of classes, ε is a small constant, and q is the ground truth distribution. This acts as a regularizer by reducing the model’s confidence.
