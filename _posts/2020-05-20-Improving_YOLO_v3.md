@@ -1,7 +1,7 @@
 ---
 title: 'How to Improve YOLOv3'
 description: YOLO has been a very popular and fast object detection algorithm, but unfortunately not the best-performing. In this article I will highlight simple training heuristics and small architectural changes that can make YOLOv3 perform better than models like Faster R-CNN and Mask R-CNN.
-date: 2019-12-25 00:55:00 +0530
+date: 2020-05-20 00:55:00 +0530
 author: skrohit
 categories: [computer-vision]
 tags: [yolo, deep-learning, object detection]
