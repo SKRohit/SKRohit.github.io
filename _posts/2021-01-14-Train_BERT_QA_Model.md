@@ -282,11 +282,13 @@ Our trained model was able to achieve an F1 score of 70 and an Exact Match of 67
 >**Predicted Answer**: 44.4 %
 {: .prompt-info }
 **Context**:  This is a retrospective study from 3 patients with 2019 - nCoV infection admitted to Renmin Hospital of Wuhan University, a COVID - 2019 designated hospital in Wuhan, from January 31 to February 6, 2020. All patients were diagnosed and classified based on the Diagnosis and Treatment of New Coronavirus Pneumonia ( 6th edition ) published by the National Health Commission of China4. We recorded the epidemiological history, demographic features, clinical characteristics, symptoms and signs, treatment and clinical outcome in detail. Additionally, we found that the proportion of probiotics was significantly reduced, such as Bifidobacterium, Lactobacillus, and Eubacterium, and the proportion of conditioned pathogenic bacteria was significantly increased, such as Corynebacterium of Actinobacteria and Ruthenibacterium of Firmicutes. Notably, all patients died.
+{: .prompt-info }
 >**Question**:What is the mortality of ARDS caused by viral infections?
 >**Predicted Answer**: all patients died.
 {: .prompt-info }
 
 >**Context**: Meanwhile, numbers of patients with COVID - 19 infection had chronic comorbidities, mainly hypertension, diabetes and cardiovascular disease, which is similar to MERS - COV population. Those results indicate that older adult males with chronic underlying disease might be more susceptibility to COVID - 19 or MERS - COV… CC - BY - NC - ND 4. 0 In terms of laboratory testing, reduced lymphocytes and increased CRP were found in both COVID - 19 and MERS - COV patients. This result indicates that COVID - 19 might be associated with cellular immune response, mainly act on lymphocytes like MERS - COV does $[ 48 ]$. The cells infected by viruses induce the release of numbers of pro - inflammatory cytokines and inflammation storm in the body. Moreover, increased cytokines might make damage to related organs such as liver $[ 49 ]$. Our results demonstrated that abnormal value of AST was found in MERS - COV population, but not in COVID - 19 population. The possible reason is that the follow - up time of COVID - 19 population was too short, and the liver.
+{: .prompt-info }
 
 >**Question**: What kind of cytokines play a major role in host response?
 {: .prompt-info }
