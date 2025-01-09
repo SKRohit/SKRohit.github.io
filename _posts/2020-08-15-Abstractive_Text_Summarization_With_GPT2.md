@@ -3,8 +3,8 @@ title: 'Abstractive Text Summarization with GPT2'
 description: In this article I will discuss an efficient abstractive text summarization approach using GPT-2 on PyTorch with the CNN/Daily Mail dataset.
 date: 2020-08-15 00:55:00 +0530
 author: skrohit
-categories: [nlp, llm]
-tags: [llms, gpt, nlp, text summarization]
+categories: [nlp, text-summarization]
+tags: [llms, gpt, deep-learning, text-summarization, transformers]
 pin: true
 ---
 

@@ -4,7 +4,7 @@ description: A brief summary of different distributed training strategies used t
 date: 2024-08-30 00:55:00 +0530
 author: skrohit
 categories: [distributed-training]
-tags: [llms, tensor parallelism, pipeline parallelism, ZeRO, fsdp, transformers]
+tags: [llms, tensor parallelism, pipeline parallelism, ZeRO, fsdp, transformers, deep-learning]
 pin: true
 ---
 
