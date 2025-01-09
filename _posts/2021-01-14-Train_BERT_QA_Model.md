@@ -41,11 +41,11 @@ _BERT Architecture [source](https://arxiv.org/pdf/1810.04805.pdf)_
 Now that we know what BERT is, let us go through its architecture and pre-training objectives briefly. BERT uses Transformer Encoder from the original [Transformer paper](https://arxiv.org/abs/1706.03762). An Encoder has a stack of encoder blocks (where the output of one block is fed as the input to the next block), and each encoder block is composed of two neural network layers. First there is a self-attention layer (which is the magic operation that makes transformers so powerful) and then a simple feed-forward layer. After each layer, there is a residual connection and a layer normalization operation as shown in the figure below.
 
 ![One Encoder Block](../assets/bert_qa/one_encoder_block.jpg)
-_One Encoder Block ([source](http://jalammar.github.io/illustrated-transformer/)). Here X1, X2 are input vectors. One vector for each token._
+_One Encoder Block ([source](https://jalammar.github.io/illustrated-transformer/)). Here X1, X2 are input vectors. One vector for each token._
 
 So, for each encoder layer, the number (with a maximum limit of 512) of input vectors and output vectors is always the same. And before the first encoder layer, the input vector for each token is obtained by adding token embedding, positional embedding, and segment embedding. These vectors are processed in parallel inside each encoder layer using matrix multiplications, and the obtained output vectors are fed to the next encoder block. After being processed sequentially through N such blocks, the obtained output vectors start understanding natural language very well.
 
-This is a very compressed overview of the BERT architecture, focusing only on the ideas we need to understand the rest of the blog. For a more elaborate discussion on how different operations happen in each layer, multi-head self-attention, and understanding parallel token processing, please check out [Jay Alammar’s Blog](http://jalammar.github.io/illustrated-transformer/).
+This is a very compressed overview of the BERT architecture, focusing only on the ideas we need to understand the rest of the blog. For a more elaborate discussion on how different operations happen in each layer, multi-head self-attention, and understanding parallel token processing, please check out [Jay Alammar’s Blog](https://jalammar.github.io/illustrated-transformer/).
 
 ### Pre-Training Objective
 A pre-training objective is a task on which a model is trained before being fine-tuned for the end task. GPT models are trained on a Generative Pre-Training task (hence the name GPT) i.e. generating the next token given previous tokens, before being fine-tuned on, say, SST-2 (sentence classification data) to classify sentences.
