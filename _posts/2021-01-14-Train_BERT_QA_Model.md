@@ -1,5 +1,5 @@
 ---
-title: 'Train Bert for Question Answering Task'
+title: 'Train BERT for Question Answering Task'
 description: Let us dive into the BERT's architecture and details of formulating Question Answering NLP task for transformer models.
 date: 2021-01-14 00:55:00 +0530
 author: skrohit
@@ -286,7 +286,7 @@ Predicted Answer: 44.4 %
 Context:  This is a retrospective study from 3 patients with 2019 - nCoV infection admitted to Renmin Hospital of Wuhan University, a COVID - 2019 designated hospital in Wuhan, from January 31 to February 6, 2020. All patients were diagnosed and classified based on the Diagnosis and Treatment of New Coronavirus Pneumonia ( 6th edition ) published by the National Health Commission of China4. We recorded the epidemiological history, demographic features, clinical characteristics, symptoms and signs, treatment and clinical outcome in detail. Additionally, we found that the proportion of probiotics was significantly reduced, such as Bifidobacterium, Lactobacillus, and Eubacterium, and the proportion of conditioned pathogenic bacteria was significantly increased, such as Corynebacterium of Actinobacteria and Ruthenibacterium of Firmicutes. Notably, all patients died.
 
 >Question:What is the mortality of ARDS caused by viral infections?    
-Predicted Answer* all patients died.
+Predicted Answer: all patients died.
 ```
 
 ```markdown
