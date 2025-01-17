@@ -8,6 +8,9 @@ tags: [yolo, deep-learning, object detection]
 pin: true
 ---
 
+> This article was first written by me and published [here](https://blog.paperspace.com/author/rohit/).
+{: .prompt-info }
+
 YOLOv3 is a popular and fast object detection algorithm, but unfortunately not as accurate as RetinaNet or Faster RCNN, which you can see in the image below. In this article I will discuss two simple yet powerful approaches suggested in recent object detection literature to improve YOLOv3. These are: 
 1) [Different Training Heuristics for Object Detection](https://arxiv.org/abs/1902.04103), and 
 2) [Adaptive Spatial Fusion of Feature Pyramids](https://arxiv.org/abs/1911.09516)

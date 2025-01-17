@@ -8,6 +8,9 @@ tags: [llms, bert, qa, deep-learning, transformers]
 pin: true
 ---
 
+> This article was first written by me and published [here](https://blog.paperspace.com/author/rohit/).
+{: .prompt-info }
+
 ## Introduction
 Question-Answering Models are machine or deep learning models that can answer questions given some context, and sometimes without any context (e.g. open-domain QA). They can extract answer phrases from paragraphs, paraphrase the answer generatively, or choose one option out of a list of given options, and so on. It all depends on the dataset it was trained on (e.g. [SQuAD](https://rajpurkar.github.io/SQuAD-explorer/), [CoQA](https://stanfordnlp.github.io/coqa/), etc.) or the problem it was trained for, or to some extent the neural network architecture. So, for example, if you feed this paragraph (context) to your model trained to extract answer phrases from context, and ask a question like “What is a question-answering model?”, it should output the first line of this paragraph.
 

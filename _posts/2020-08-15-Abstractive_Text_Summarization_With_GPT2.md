@@ -8,6 +8,9 @@ tags: [llms, gpt, deep-learning, text-summarization, transformers]
 pin: true
 ---
 
+> This article was first written by me and published [here](https://blog.paperspace.com/author/rohit/).
+{: .prompt-info }
+
 ## Introduction
 When you want machine learning to convey the meaning of a text, it can do one of two things: rephrase the information, or just show you the most important parts of the content. The first approach is called abstractive summarization, while the second is called extractive summarization. Neither task is easy, and both have their own limitations even in the current state of the art. Extractive summarization often fails to organize sentences in a natural way, so that the readability of created summaries is not acceptable and many times not even conveying the gist of the content. Meanwhile, current state-of-the-art deep learning models like [GPT-3](https://arxiv.org/abs/2005.14165), [GPT-2](https://openai.com/blog/better-language-models/), [BERT](https://ai.googleblog.com/2018/11/open-sourcing-bert-state-of-art-pre.html), etc. help us to generate paraphrased human-like summaries in terms of readability, but their correctness is often questionable. Here we'll focus on achieving acceptable results with the latter approach.
 
