@@ -5,8 +5,8 @@ Let us start with some definitions.
 
 ## Some Definitions
 
-- **EventLoop**: 
-- **Asyncio**:
+- **EventLoop**: A programming construct where instead of waiting for a blocking operation e.g. reading a file, the control shift to next non-blocking operation.
+- **Asyncio**: 
 - **FastAPI**:
 
 ## Create files and folders
@@ -144,6 +144,6 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMzg1MzkxODQ4LDU5MzYzMTg0MCw5MzM2MT
-QzNjQsLTEzMTYzNjQ5MDldfQ==
+eyJoaXN0b3J5IjpbMTA5MTE3ODk2MSwzODUzOTE4NDgsNTkzNj
+MxODQwLDkzMzYxNDM2NCwtMTMxNjM2NDkwOV19
 -->
