@@ -1,6 +1,7 @@
 # EventLoop, Asyncio ecosystem and FastAPI
 Suppose you are taksed with creating an api, that performs a compute intensive task and handles multiple requests at a time, how would you do it ?
-For an api to handle multiple requests, it should do so asynchronously. 
+For an api to handle multiple requests, it should do so asynchronously. But does it mean to be asynchronous. How do we write asynchronous code and api in python. What are the guidelines that we should follow while writing such code.
+Let us start with some definitions.
 
 ## Some Definitions
 
@@ -143,6 +144,6 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNTkzNjMxODQwLDkzMzYxNDM2NCwtMTMxNj
-M2NDkwOV19
+eyJoaXN0b3J5IjpbMzg1MzkxODQ4LDU5MzYzMTg0MCw5MzM2MT
+QzNjQsLTEzMTYzNjQ5MDldfQ==
 -->
