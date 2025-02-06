@@ -1,6 +1,6 @@
 # EventLoop, Asyncio ecosystem and FastAPI
 Suppose you are taksed with creating an api, that performs a compute intensive task and handles multiple requests at a time, how would you do it ?
-For an api to handle multiple requests, it should do so asynchr
+For an api to handle multiple requests, it should do so asynchronously. 
 
 ## Some Definitions
 
@@ -143,6 +143,6 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTYzMDE0MjUwMyw5MzM2MTQzNjQsLTEzMT
-YzNjQ5MDldfQ==
+eyJoaXN0b3J5IjpbNTkzNjMxODQwLDkzMzYxNDM2NCwtMTMxNj
+M2NDkwOV19
 -->
