@@ -1,11 +1,8 @@
-# EventLoop, Asyncio and 
+# EventLoop, Asyncio ecosystem and FastAPI
+## Some Definitions
 
-Hi! I'm your first Markdown file in **StackEdit**. If you want to learn about StackEdit, you can read me. If you want to play with Markdown, you can edit me. Once you have finished with me, you can create new files by opening the **file explorer** on the left corner of the navigation bar.
-
-
-# Files
-
-StackEdit stores your files in your browser, which means all your files are automatically saved locally and are accessible **offline!**
+- **EventLoop**: 
+- **Asyncio
 
 ## Create files and folders
 
@@ -142,5 +139,5 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTIwMTYxMzIzOTBdfQ==
+eyJoaXN0b3J5IjpbLTY4MDc4NTQ3NV19
 -->
