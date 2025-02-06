@@ -1,5 +1,6 @@
 # EventLoop, Asyncio ecosystem and FastAPI
-Suppose you are taksed with creating a web server, that performs a compute intensive task
+Suppose you are taksed with creating a web server, that performs a compute intensive task and serves multiple requests at a time, how would you do it ?
+
 ## Some Definitions
 
 - **EventLoop**: 
@@ -141,6 +142,6 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE2MjAyMDY5ODgsLTEzMTYzNjQ5MDldfQ
+eyJoaXN0b3J5IjpbLTIwMDMwNjU1NzMsLTEzMTYzNjQ5MDldfQ
 ==
 -->
