@@ -7,7 +7,7 @@ Let us start with some definitions.
 
 - **EventLoop**: A programming construct where instead of waiting for a blocking operation e.g. reading a file, the control shift to next non-blocking operation.
 - **Asyncio**: A python library that implements state of the art event loop and provides apis to write concurrent or asynchronous code in python.
-- **FastAPI**:
+- **FastAPI**: A high performant web framework in python mainly due to its 
 
 ## Create files and folders
 
@@ -144,7 +144,7 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTIyMDEwNjEzNCwxMDkxMTc4OTYxLDM4NT
+eyJoaXN0b3J5IjpbLTM1MzMzMjkwNywxMDkxMTc4OTYxLDM4NT
 M5MTg0OCw1OTM2MzE4NDAsOTMzNjE0MzY0LC0xMzE2MzY0OTA5
 XX0=
 -->
