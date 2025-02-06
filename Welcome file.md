@@ -1,8 +1,10 @@
 # EventLoop, Asyncio ecosystem and FastAPI
+Suppose you are taksed with creating a web server, that performs a compute intensive task
 ## Some Definitions
 
 - **EventLoop**: 
 - **Asyncio**:
+- **FastAPI**:
 
 ## Create files and folders
 
@@ -139,5 +141,6 @@ B --> D{Rhombus}
 C --> D
 ```
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEzMTYzNjQ5MDldfQ==
+eyJoaXN0b3J5IjpbLTE2MjAyMDY5ODgsLTEzMTYzNjQ5MDldfQ
+==
 -->
