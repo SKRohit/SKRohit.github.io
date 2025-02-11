@@ -165,8 +165,13 @@ Topics to look into:
 - llm testing methods
 - Data pipeline (less priority)
 
+
+
+
+## Metrics for search systems
+
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbOTQzMDgzNjg1LC0xMDU4ODIyODg1LC0zNT
-MzMzI5MDcsMTA5MTE3ODk2MSwzODUzOTE4NDgsNTkzNjMxODQw
-LDkzMzYxNDM2NCwtMTMxNjM2NDkwOV19
+eyJoaXN0b3J5IjpbMTI4OTA0MTIyMSwtMTA1ODgyMjg4NSwtMz
+UzMzMyOTA3LDEwOTExNzg5NjEsMzg1MzkxODQ4LDU5MzYzMTg0
+MCw5MzM2MTQzNjQsLTEzMTYzNjQ5MDldfQ==
 -->
