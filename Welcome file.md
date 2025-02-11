@@ -151,9 +151,11 @@ Topics to look into:
 - Deploying ML models for testing on cloud 
 - Training LLM using transformers (parameters tuning for training) and on OpenAI
 - How to validate Rag applications
-- How to validate 
+- How to cite an information in Rag application
+- How to validate an instruction tuned model
+- 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTk4OTYzNTIyMiwtMzUzMzMyOTA3LDEwOT
+eyJoaXN0b3J5IjpbMTQ2MTQ4MTUzMCwtMzUzMzMyOTA3LDEwOT
 ExNzg5NjEsMzg1MzkxODQ4LDU5MzYzMTg0MCw5MzM2MTQzNjQs
 LTEzMTYzNjQ5MDldfQ==
 -->
