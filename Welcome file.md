@@ -148,7 +148,7 @@ C --> D
 Topics to look into:
 - Metrics for search result
 - How to improve search results using vector search
-- AI text classification task
+- AI text classification task: fastdetectgpt, semantic feature paper, h3c paper
 - Deploying ML models for testing on cloud (FastAPI)
 - Training LLM using transformers (parameters tuning for training) and on OpenAI
 - How to validate Rag applications
@@ -164,7 +164,7 @@ Topics to look into:
 - continuous training pipeline
 - reliable and scalable deployment of llms in production
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTQyNzI1MTkzNCwtMzUzMzMyOTA3LDEwOT
+eyJoaXN0b3J5IjpbMTA0Mjc3Mjg0NCwtMzUzMzMyOTA3LDEwOT
 ExNzg5NjEsMzg1MzkxODQ4LDU5MzYzMTg0MCw5MzM2MTQzNjQs
 LTEzMTYzNjQ5MDldfQ==
 -->
