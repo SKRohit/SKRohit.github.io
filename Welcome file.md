@@ -159,14 +159,14 @@ Topics to look into:
 - monitoring ml models in production
 - microservice architectures for llm deployment
 - restful api basics, pagination apis, 
-- type of testing
-- llm testing methods
-- continuous training pipeline
 - reliable and scalable deployment of llms in production
 - writing ML Services and APIs
 - performance optimization of ml algos and systems
+-  type of testing
+- llm testing methods
+
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEwNTg4MjI4ODUsLTM1MzMzMjkwNywxMD
-kxMTc4OTYxLDM4NTM5MTg0OCw1OTM2MzE4NDAsOTMzNjE0MzY0
-LC0xMzE2MzY0OTA5XX0=
+eyJoaXN0b3J5IjpbLTcyMzM1MDUxMSwtMTA1ODgyMjg4NSwtMz
+UzMzMyOTA3LDEwOTExNzg5NjEsMzg1MzkxODQ4LDU5MzYzMTg0
+MCw5MzM2MTQzNjQsLTEzMTYzNjQ5MDldfQ==
 -->
