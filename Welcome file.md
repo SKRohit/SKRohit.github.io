@@ -159,9 +159,9 @@ Topics to look into:
 - microservice architectures for llm deployment
 - restful api basics, pagination apis, 
 - type of testing
-- 
+- llm testing methods
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNDA2NzY1ODczLC0zNTMzMzI5MDcsMTA5MT
-E3ODk2MSwzODUzOTE4NDgsNTkzNjMxODQwLDkzMzYxNDM2NCwt
-MTMxNjM2NDkwOV19
+eyJoaXN0b3J5IjpbLTEwOTI5NDQ5MDgsLTM1MzMzMjkwNywxMD
+kxMTc4OTYxLDM4NTM5MTg0OCw1OTM2MzE4NDAsOTMzNjE0MzY0
+LC0xMzE2MzY0OTA5XX0=
 -->
