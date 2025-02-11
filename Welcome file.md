@@ -149,9 +149,10 @@ Topics to look into:
 - Matrics for search result
 - How to improve search results using vector search
 - Deploying ML models for testing on cloud 
+- Training LLM using transformers (parameters tuning  and on OpenAI
 - 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE3NTgwMDMyODUsLTM1MzMzMjkwNywxMD
-kxMTc4OTYxLDM4NTM5MTg0OCw1OTM2MzE4NDAsOTMzNjE0MzY0
-LC0xMzE2MzY0OTA5XX0=
+eyJoaXN0b3J5IjpbMTM3NDEzODczNCwtMzUzMzMyOTA3LDEwOT
+ExNzg5NjEsMzg1MzkxODQ4LDU5MzYzMTg0MCw5MzM2MTQzNjQs
+LTEzMTYzNjQ5MDldfQ==
 -->
