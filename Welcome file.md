@@ -157,10 +157,11 @@ Topics to look into:
 - Data pipeline (less priority)
 - monitoring ml models in production
 - microservice architectures for llm deployment
-- restful api basics
+- restful api basics, pagination apis, 
+- type of testing
 - 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTE5MjEyMzI1OCwtMzUzMzMyOTA3LDEwOT
-ExNzg5NjEsMzg1MzkxODQ4LDU5MzYzMTg0MCw5MzM2MTQzNjQs
-LTEzMTYzNjQ5MDldfQ==
+eyJoaXN0b3J5IjpbNDA2NzY1ODczLC0zNTMzMzI5MDcsMTA5MT
+E3ODk2MSwzODUzOTE4NDgsNTkzNjMxODQwLDkzMzYxNDM2NCwt
+MTMxNjM2NDkwOV19
 -->
