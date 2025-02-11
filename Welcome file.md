@@ -150,9 +150,10 @@ Topics to look into:
 - How to improve search results using vector search
 - Deploying ML models for testing on cloud 
 - Training LLM using transformers (parameters tuning for training) and on OpenAI
-- 
+- How to validate Rag applications
+- How to validate 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE5MTI2NDUyOCwtMzUzMzMyOTA3LDEwOT
+eyJoaXN0b3J5IjpbMTk4OTYzNTIyMiwtMzUzMzMyOTA3LDEwOT
 ExNzg5NjEsMzg1MzkxODQ4LDU5MzYzMTg0MCw5MzM2MTQzNjQs
 LTEzMTYzNjQ5MDldfQ==
 -->
