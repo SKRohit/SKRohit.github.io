@@ -156,9 +156,11 @@ Topics to look into:
 - serving with vllm
 - Data pipeline (less priority)
 - monitoring ml models in production
+- microservice architectures for llm deployment
+- restful api basics
 - 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE3NzUzNjI4MzIsLTM1MzMzMjkwNywxMD
-kxMTc4OTYxLDM4NTM5MTg0OCw1OTM2MzE4NDAsOTMzNjE0MzY0
-LC0xMzE2MzY0OTA5XX0=
+eyJoaXN0b3J5IjpbMTE5MjEyMzI1OCwtMzUzMzMyOTA3LDEwOT
+ExNzg5NjEsMzg1MzkxODQ4LDU5MzYzMTg0MCw5MzM2MTQzNjQs
+LTEzMTYzNjQ5MDldfQ==
 -->
