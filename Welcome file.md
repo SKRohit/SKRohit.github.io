@@ -154,9 +154,11 @@ Topics to look into:
 - How to cite an information in Rag application
 - How to validate an instruction tuned model
 - serving with vllm
+- Data pipeline (less priority)
+- monitoring ml models in production
 - 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTM4MTUyMTM1NSwtMzUzMzMyOTA3LDEwOT
-ExNzg5NjEsMzg1MzkxODQ4LDU5MzYzMTg0MCw5MzM2MTQzNjQs
-LTEzMTYzNjQ5MDldfQ==
+eyJoaXN0b3J5IjpbLTE3NzUzNjI4MzIsLTM1MzMzMjkwNywxMD
+kxMTc4OTYxLDM4NTM5MTg0OCw1OTM2MzE4NDAsOTMzNjE0MzY0
+LC0xMzE2MzY0OTA5XX0=
 -->
