@@ -155,7 +155,6 @@ Topics to look into:
 - How to cite an information in Rag application
 - How to validate an instruction tuned model
 - serving with vllm
-- Data pipeline (less priority)
 - monitoring ml models in production
 - microservice architectures for llm deployment
 - restful api basics, pagination apis, 
@@ -164,9 +163,10 @@ Topics to look into:
 - performance optimization of ml algos and systems
 -  type of testing
 - llm testing methods
+- Data pipeline (less priority)
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTcyMzM1MDUxMSwtMTA1ODgyMjg4NSwtMz
-UzMzMyOTA3LDEwOTExNzg5NjEsMzg1MzkxODQ4LDU5MzYzMTg0
-MCw5MzM2MTQzNjQsLTEzMTYzNjQ5MDldfQ==
+eyJoaXN0b3J5IjpbOTQzMDgzNjg1LC0xMDU4ODIyODg1LC0zNT
+MzMzI5MDcsMTA5MTE3ODk2MSwzODUzOTE4NDgsNTkzNjMxODQw
+LDkzMzYxNDM2NCwtMTMxNjM2NDkwOV19
 -->
