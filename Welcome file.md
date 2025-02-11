@@ -164,9 +164,9 @@ Topics to look into:
 - continuous training pipeline
 - reliable and scalable deployment of llms in production
 - writing ML Services and APIs
-- performance optimization of 
+- performance optimization of ml algos and systems
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTA0Mzg3MzYyMSwtMzUzMzMyOTA3LDEwOT
-ExNzg5NjEsMzg1MzkxODQ4LDU5MzYzMTg0MCw5MzM2MTQzNjQs
-LTEzMTYzNjQ5MDldfQ==
+eyJoaXN0b3J5IjpbLTEwNTg4MjI4ODUsLTM1MzMzMjkwNywxMD
+kxMTc4OTYxLDM4NTM5MTg0OCw1OTM2MzE4NDAsOTMzNjE0MzY0
+LC0xMzE2MzY0OTA5XX0=
 -->
