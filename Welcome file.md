@@ -153,9 +153,10 @@ Topics to look into:
 - How to validate Rag applications
 - How to cite an information in Rag application
 - How to validate an instruction tuned model
+- serving with vllm
 - 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTM0NjQ0Mjg1MSwtMzUzMzMyOTA3LDEwOT
+eyJoaXN0b3J5IjpbLTM4MTUyMTM1NSwtMzUzMzMyOTA3LDEwOT
 ExNzg5NjEsMzg1MzkxODQ4LDU5MzYzMTg0MCw5MzM2MTQzNjQs
 LTEzMTYzNjQ5MDldfQ==
 -->
