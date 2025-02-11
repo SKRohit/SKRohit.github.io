@@ -163,8 +163,9 @@ Topics to look into:
 - llm testing methods
 - continuous training pipeline
 - reliable and scalable deployment of llms in production
+- writing ML Services and APIs
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTA0Mjc3Mjg0NCwtMzUzMzMyOTA3LDEwOT
+eyJoaXN0b3J5IjpbMTYxODEyMDU3NiwtMzUzMzMyOTA3LDEwOT
 ExNzg5NjEsMzg1MzkxODQ4LDU5MzYzMTg0MCw5MzM2MTQzNjQs
 LTEzMTYzNjQ5MDldfQ==
 -->
