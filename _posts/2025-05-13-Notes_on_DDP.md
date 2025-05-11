@@ -10,6 +10,7 @@ pin: true
 
 # What is Distributed Data Parallel
 Training 
+
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTQ0MDI4NjcxNl19
+eyJoaXN0b3J5IjpbLTE3NTE1MzM1OF19
 -->
