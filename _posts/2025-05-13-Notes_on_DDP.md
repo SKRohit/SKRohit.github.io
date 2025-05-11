@@ -7,6 +7,9 @@ categories: [distributed-training, DDP]
 tags: [llms, tensor parallelism, pipeline parallelism, ZeRO, fsdp, transformers, deep-learning]
 pin: true
 ---
+
+# What is Distributed Data Parallel
+Training 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTI5MTMxMDcwMV19
+eyJoaXN0b3J5IjpbLTQ0MDI4NjcxNl19
 -->
