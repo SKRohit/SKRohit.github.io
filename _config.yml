@@ -16,7 +16,7 @@ timezone: Asia/Calcutta
 
 title: Incomplete # the main title
 
-tagline: SKRohit's Blog # it will display as the subtitle
+tagline: Field Notes of an ML Engineer # it will display as the subtitle
 
 description: >- # used by seo meta and the atom feed
   A tech blog discussing latest topics on machine learning, deep learning, AI, large language models and vision language models.
