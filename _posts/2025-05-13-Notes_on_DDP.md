@@ -177,7 +177,7 @@ TorchDynamo’s DDPOptimizer helps by breaking the forward graph at the logical 
 
 ---
 
-## References:
+## 📚 References:
 - [PyTorch DDP Paper](https://arxiv.org/pdf/2006.15704)
 - [PyTorch DDP Internal Blog](https://yi-wang-2005.medium.com/pytorch-distributeddataparallel-internals-c01c30a41192)
 - [PyTorch DDP Internal Design](https://docs.pytorch.org/docs/stable/notes/ddp.html)
