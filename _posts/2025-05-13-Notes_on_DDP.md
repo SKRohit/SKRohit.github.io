@@ -183,5 +183,6 @@ TorchDynamo’s DDPOptimizer helps by breaking the forward graph at the logical 
 - [PyTorch DDP Internal Design](https://docs.pytorch.org/docs/stable/notes/ddp.html)
 - [torch.distributed PyTorch doc](https://docs.pytorch.org/docs/stable/distributed.html)
 - [torch.nn.parallel.DistributedDataParallel PyTorch doc](https://docs.pytorch.org/docs/stable/generated/torch.nn.parallel.DistributedDataParallel.html)
+
 ---
 *"The art of distributed training is not just dividing work, but orchestrating it."*

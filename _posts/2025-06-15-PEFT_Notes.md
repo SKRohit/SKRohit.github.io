@@ -84,10 +84,28 @@ If one forward-backward pass with a single token requires ~6 operations per para
 ### Core Concept
 Instead of changing model weights, we learn **soft prompts** - trainable embeddings that guide the model's behavior.
 
+### What Are Soft Prompts?
+Soft prompts are continuous, learnable vectors in the embedding space that are prepended to the input tokens. Unlike discrete text prompts that use actual words, soft prompts are:
+- *Trainable parameters*: Vectors initialized randomly or from existing embeddings
+- *Model-preserving*: They don't modify the underlying model weights
+- *Optimized directly*: Updated via gradient descent during training
+
 ```
 Traditional: "Translate to French: Hello world"
-Soft Prompt: [LEARNABLE_TOKENS] + "Hello world"
+Soft Prompt: [LEARN][ABLE][TOKENS] + "Hello world"
 ```
+
+### During Training
+- Initialize soft prompt vectors (e.g., 5-20 "virtual tokens")
+- Prepend these vectors to each input's embedding
+- Freeze the entire language model
+- Update only the soft prompt vectors through backpropagation
+
+### Advantages
+- *Efficiency*: Training requires vastly fewer parameters (0.01% of model size)
+- *Storage*: Each task needs only to store small prompt vectors instead of full model copies
+- *Composability*: Soft prompts can be combined for multi-task scenarios
+- *Privacy*: The original model remains unchanged
 
 ### 🔧 Implementation Challenge
 Complete this PyTorch implementation:
@@ -114,18 +132,18 @@ class SoftPromptTuning(nn.Module):
     def forward(self, input_ids, attention_mask):
         batch_size = input_ids.shape[0]
         
-        # TODO: Get input embeddings from the model
+        # Get input embeddings from the model
         input_embeds = self.model.get_input_embeddings()(input_ids)
         
-        # TODO: Expand soft prompt for batch
+        # Expand soft prompt for batch
         prompt_embeds = self.soft_prompt.unsqueeze(0).expand(
             batch_size, -1, -1
         )
         
-        # TODO: Concatenate prompt with input
+        # Concatenate prompt with input
         full_embeds = torch.cat([prompt_embeds, input_embeds], dim=1)
         
-        # TODO: Create attention mask for full sequence
+        # Create attention mask for full sequence
         prompt_attention = torch.ones(
             batch_size, self.prompt_length, device=attention_mask.device
         )
@@ -135,9 +153,16 @@ class SoftPromptTuning(nn.Module):
                          attention_mask=full_attention)
 
 # Usage example
-model = # Your pre-trained model
+# Load pre-trained model
+model = AutoModelForCausalLM.from_pretrained("meta-llama/Llama-2-7b-hf")
+# Initialize soft prompt appended model for finetuning
 soft_prompt_model = SoftPromptTuning(model, prompt_length=20, embedding_dim=768)
 ```
+
+### Disadvantages:
+- *Complex Reasoning Tasks*: Muti step logic, deep understanding of the context
+- *Non Generalization*: Doesn't generaraize well to unseen tasks during LLM training
+- *Less Interpretable*: Less interpretable and harder to debug compared to human prompts.
 
 ### 💭 Discussion Points
 1. What are the advantages of soft prompts over hard prompts?
@@ -169,9 +194,6 @@ soft_prompt = nn.Parameter(torch.randn(10, 768))
 # Missing: ___________
 optimizer = torch.optim.Adam([soft_prompt], lr=0.001)
 ```
-
-**Answers:** 1-d, 2-c, 3-Freezing original model parameters
-
 ---
 
 ## 🎯 PEFT Technique #2: Prefix Tuning
