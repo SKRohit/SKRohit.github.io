@@ -19,7 +19,7 @@ In distributed data parallel, DDP, technique of distributed training, the neural
 
 A sample script to perform DDP training with PyTorch is shown below:
 
-<details>
+<details markdown="1">
 <summary>💡 DDP Training Code</summary>
 
 ```
