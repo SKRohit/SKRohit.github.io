@@ -5,7 +5,7 @@ date: 2026-03-20 10:30:00 +0530
 author: skrohit
 categories: [pytorch, tensors]
 tags: [pytorch, tensors, memory-layout, stride, contiguity, deep-learning]
-pin: false
+pin: true
 ---
 
 # PyTorch Memory Deep Dive: `view`, `reshape`, `transpose`, `permute` and the Contiguity Puzzle 🧠
