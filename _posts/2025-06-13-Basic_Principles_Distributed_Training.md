@@ -6,7 +6,7 @@ date: 2025-06-13 00:55:00 +0530
 author: skrohit
 categories: [distributed-training, deep-learning]
 tags: [llms, transformers]
-pin:false
+pin: false
 ---
 
 ## What does any distributed training algorithm do?
