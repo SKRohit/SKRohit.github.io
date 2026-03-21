@@ -5,7 +5,7 @@ date: 2024-09-28 00:55:00 +0530
 author: skrohit
 categories: [ZeRO Optimizer]
 tags: [llms, ZeRO, transformers]
-pin: false
+pin: true
 ---
 
 > Note: Will not find anything new if you have already read [ZeRO paper](https://arxiv.org/pdf/1910.02054).
