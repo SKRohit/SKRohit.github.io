@@ -25,17 +25,17 @@ Every quantization scheme, regardless of the target precision, follows the same 
 
 **Quantize** (high precision → low precision):
 
-$$x_q = \text{round}\!\left(\frac{x}{\text{scale}} + \text{zero\_point}\right)$$
+$$x_q = \operatorname{round}\!\left(\frac{x}{\mathrm{scale}} + z_p\right)$$
 
 **Dequantize** (low precision → high precision):
 
-$$\hat{x} = (x_q - \text{zero\_point}) \times \text{scale}$$
+$$\hat{x} = (x_q - z_p) \times \mathrm{scale}$$
 
 Where:
 - $x$ = original high-precision value
 - $x_q$ = quantized low-precision value
-- $\text{scale}$ = a scalar that maps the real-value range to the quantized range
-- $\text{zero\_point}$ = an offset that aligns the zero of the real range with a quantized code
+- $\mathrm{scale}$ = a scalar that maps the real-value range to the quantized range
+- $z_p$ = an offset that aligns the zero of the real range with a quantized code
 - $\hat{x}$ = reconstructed value (approximately equal to $x$, with some quantization error)
 
 The **quantization error** is $\epsilon = x - \hat{x}$. This error is the price paid for compression. The entire art of quantization is choosing `scale` and `zero_point` to minimize this error across all elements.
@@ -50,7 +50,7 @@ Integer formats have a **uniform, evenly-spaced** grid of representable values. 
 
 Most common for weights. The representable range is centered at zero:
 
-$$\text{scale} = \frac{\max(\lvert x \rvert)}{q_{\max}}$$
+$$\mathrm{scale} = \frac{\max(\lvert x \rvert)}{q_{\max}}$$
 
 where $q_{\max} = 127$ for INT8 or $7$ for INT4.
 
@@ -86,7 +86,7 @@ error   = [ 0.0032, 0.0024, 0.0008,  0.0000]
 
 Common for activations like ReLU outputs that are always $\geq 0$. Instead of wasting half the quantized range on negative values that never occur, the range is shifted:
 
-$$\text{scale} = \frac{x_{\max} - x_{\min}}{q_{\max} - q_{\min}}, \qquad \text{zero\_point} = \text{round}\!\left(q_{\min} - \frac{x_{\min}}{\text{scale}}\right)$$
+$$\mathrm{scale} = \frac{x_{\max} - x_{\min}}{q_{\max} - q_{\min}}, \qquad z_p = \operatorname{round}\!\left(q_{\min} - \frac{x_{\min}}{\mathrm{scale}}\right)$$
 
 This allows mapping a range like $[0, 6]$ (ReLU6 output) to the full $[0, 255]$ unsigned INT8 range.
 
@@ -133,15 +133,15 @@ Before discussing FP8, we need to understand how floating-point numbers work. Ev
 
 The value is computed as:
 
-$$\text{value} = (-1)^{\text{sign}} \times 2^{(\text{stored\_exponent} - \text{bias})} \times (1 + \text{mantissa} / 2^M)$$
+$$\mathrm{value} = (-1)^{\mathrm{sign}} \times 2^{(e_{\mathrm{stored}} - \mathrm{bias})} \times \left(1 + \mathrm{mantissa} / 2^M\right)$$
 
 ### 3.1 What Is the Exponent Bias?
 
-The `stored_exponent` field is an **unsigned integer** (always $\geq 0$). But we need to represent both very large values ($2^{10}$) and very small values ($2^{-10}$). The **bias** is an offset that shifts the exponent so it can be effectively negative:
+The stored exponent field, denoted by $e_{\mathrm{stored}}$, is an **unsigned integer** (always $\geq 0$). But we need to represent both very large values ($2^{10}$) and very small values ($2^{-10}$). The **bias** is an offset that shifts the exponent so it can be effectively negative:
 
-$$\text{effective\_exponent} = \text{stored\_exponent} - \text{bias}$$
+$$e_{\mathrm{eff}} = e_{\mathrm{stored}} - \mathrm{bias}$$
 
-The standard formula for bias is: $\text{bias} = 2^{(E-1)} - 1$, where $E$ is the number of exponent bits.
+The standard formula for bias is: $\mathrm{bias} = 2^{(E-1)} - 1$, where $E$ is the number of exponent bits.
 
 For FP32 ($E = 8$): $\text{bias} = 127$. Stored exponent range $[1, 254]$ maps to effective range $[-126, +127]$.
 
@@ -233,11 +233,11 @@ Because FP8 is a floating-point format, the hardware can directly cast between F
 
 **Quantize:**
 
-$$x_q = \text{cast\_to\_fp8}\!\left(\frac{x}{\text{scale}}\right)$$
+$$x_q = \operatorname{castToFp8}\!\left(\frac{x}{\mathrm{scale}}\right)$$
 
 **Dequantize:**
 
-$$\hat{x} = \text{cast\_from\_fp8}(x_q) \times \text{scale}$$
+$$\hat{x} = \operatorname{castFromFp8}(x_q) \times \mathrm{scale}$$
 
 There is **no zero_point** in FP8 quantization -- it is always symmetric around zero, because the floating-point format already has a sign bit.
 
@@ -286,7 +286,7 @@ Notice:
 | **Zero point** | Can be non-zero (asymmetric) | Always 0 (symmetric only) |
 | **Rounding** | Round to nearest integer | Cast to nearest FP8 representable value |
 | **Good at** | Uniform distributions | Bell-curve / Gaussian distributions |
-| **Scale formula** | $\max(\lvert x \rvert) / q_{\max}$ | $\max(\lvert x \rvert) / (\text{fullscale} \times \text{backoff})$ |
+| **Scale formula** | $\max(\lvert x \rvert) / q_{\max}$ | $\max(\lvert x \rvert) / (\mathrm{fullscale} \times \mathrm{backoff})$ |
 | **HW operation** | Integer multiply-accumulate | FP8 multiply-accumulate (native on Gaudi, H100) |
 
 For LLM inference, FP8 is generally preferred because neural network weight and activation distributions are approximately Gaussian (bell-shaped, centered near zero). FP8's logarithmic spacing naturally allocates more precision where most values lie.
@@ -475,9 +475,9 @@ After computing the scale, it can be **rounded** to constrain it to values that 
 
 **POW2**: Round up to the nearest power of 2:
 
-$$\text{scale\_pow2} = 2^{\lceil \log_2(\text{scale}) \rceil}$$
+$$\mathrm{scale}_{\mathrm{pow2}} = 2^{\lceil \log_2(\mathrm{scale}) \rceil}$$
 
-Example: $\text{scale} = 3.5 \Rightarrow \log_2(3.5) \approx 1.81 \Rightarrow \lceil 1.81 \rceil = 2 \Rightarrow 2^2 = 4.0$
+Example: $\mathrm{scale} = 3.5 \Rightarrow \log_2(3.5) \approx 1.81 \Rightarrow \lceil 1.81 \rceil = 2 \Rightarrow 2^2 = 4.0$
 
 Multiplying/dividing by a power of 2 is equivalent to a bit-shift in the exponent field -- essentially free on hardware. Slight accuracy loss due to the ceiling rounding.
 
@@ -744,7 +744,7 @@ Tensor:  [v0, v1, v2, ... v31] [v32, v33, ... v63] [v64, ...]
 
 The shared exponent is stored in **E8M0 format** -- 8 exponent bits, 0 mantissa bits, no sign bit. It can only represent **exact powers of 2**:
 
-$$\text{block\_scale} = 2^{(\text{stored\_exponent} - 127)}$$
+$$\mathrm{blockScale} = 2^{(e_{\mathrm{stored}} - 127)}$$
 
 ### 12.3 Why E8M0 (No Mantissa) for the Shared Exponent?
 
