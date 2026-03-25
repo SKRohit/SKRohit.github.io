@@ -5,6 +5,7 @@ date: 2026-03-25 00:00:00 +0530
 author: skrohit
 categories: [quantization, inference]
 tags: [llms, fp8, mxfp4, quantization, neural-compressor, gaudi, deep-learning]
+math: true
 pin: false
 ---
 
