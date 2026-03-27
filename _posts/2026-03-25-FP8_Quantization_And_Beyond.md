@@ -526,7 +526,7 @@ Without calibration, you'd have to guess scales. A bad guess means either:
 
 **Phase 1: MEASURE (Calibration)**
 
-Every non-blocklisted module (e.g., `nn.Linear`) is instrumented with observer hooks. The `MaxAbsObserver` tracks the running maximum absolute value across all calibration samples:
+Every non-blocklisted module (e.g., `nn.Linear`) is replaced with a patched version that intercepts forward passes (see Section 10 for the full mechanics). The `MaxAbsObserver` tracks the running maximum absolute value across all calibration samples:
 
 ```
 # Pseudocode for MaxAbsObserver
@@ -578,9 +578,301 @@ Without this fix, the matmul would use a different scale than what the cache was
 
 ---
 
-## 🔀 10. Static vs Dynamic Quantization
+## 🔧 10. Under the Hood: How INC Patches Modules for Measurement and Quantization
 
-### 10.1 Static Quantization (Default)
+The previous section described *what* INC measures. This section explains *how* -- the actual mechanism by which INC intercepts module forward passes, records statistics, computes scales, and applies quantization.
+
+### 10.1 Module Replacement, Not Hooks
+
+INC does **not** use PyTorch's `register_forward_hook` or `register_forward_pre_hook`. Instead, it **replaces entire modules** in the model's module tree using `setattr`. This is more invasive but gives full control over the forward path.
+
+The process has three steps:
+
+**Step 1: Build a parent-child map.** INC walks the model tree and records, for every module, its parent and attribute name:
+
+```
+# Pseudocode
+for each (name, mod) in model.named_children() recursively:
+    parent_child_map[mod] = (parent_module, attribute_name)
+```
+
+**Step 2: For each module in the quantization list, replace it.** For each module whose class name is in the whitelist (e.g., `Linear`, `Matmul`, `VLLMKVCache`):
+
+```
+# Pseudocode
+original_linear = model.layers[0].self_attn.qkv_proj    # nn.Linear
+
+patched_linear = PatchedLinear(original_linear, parent, observers, name)
+
+setattr(parent, "qkv_proj", patched_linear)
+# model.layers[0].self_attn.qkv_proj now points to PatchedLinear
+```
+
+**Step 3: Wire up the forward method.** The `PatchedModuleBase` constructor checks the quantization mode and assigns the appropriate forward:
+
+```
+# Pseudocode
+if mode == MEASURE:
+    self.forward = self.forward_measure    # intercept + observe + delegate
+elif mode == QUANTIZE:
+    self.forward = self.forward_quant      # quantize + FP8 matmul
+```
+
+The original module is saved as `self.orig_mod`, so the patched module can delegate to it during measurement.
+
+### 10.2 The Module Type Registry
+
+Each module class maps to a **module type** that determines how many inputs, outputs, and parameters it has. This drives how many observers (or quantizers) are created:
+
+| Module Class | Module Type | num_inputs | param_names | num_outputs |
+|---|---|:---:|---|:---:|
+| `Linear` | `linear` | 1 | `["weight"]` | 1 |
+| `Matmul` | `matmul` | 2 | `[]` | 1 |
+| `VLLMKVCache` | `kv_cache` | 1 | `[]` | 1 |
+| `Softmax` | `softmax` | 1 | `[]` | 1 |
+
+So a `Linear` gets 1 input observer + 1 weight observer + 1 output observer. A `Matmul` gets 2 input observers (one per operand) + 1 output observer. A `VLLMKVCache` gets 1 input observer + 1 output observer.
+
+### 10.3 Observer Creation
+
+For each module, `init_measure_object` creates one observer per slot:
+
+```
+# Pseudocode
+input_observers  = [ObserverClass("input0", mod), ObserverClass("input1", mod), ...]
+                     ^-- one per num_inputs
+output_observers = [ObserverClass("output0", mod), ...]
+                     ^-- one per num_outputs
+param_observers  = {"weight": ObserverClass("weight", mod), ...}
+                     ^-- one per param_name
+```
+
+These observers are bundled into a `ModuleExtraConfig` and attached to the patched module as `self._mod_extra_config`.
+
+**Weights are measured immediately** during model preparation (before any calibration data flows), because they are static:
+
+```
+# Pseudocode (runs once at preparation time)
+for each param_name in ["weight"]:
+    weight_tensor = patched_module.weight
+    patched_module._mod_extra_config.params["weight"].measure(weight_tensor)
+```
+
+### 10.4 Measurement During Forward Passes
+
+Each patched module's `forward_measure` follows the same pattern: observe inputs, run the original forward, observe outputs.
+
+**PatchedLinear** (1 input, 1 output):
+
+```
+# Pseudocode
+def forward_measure(self, input):
+    measure_input((input,), self.observers.inputs)       # observer[0].measure(input)
+    output = self.orig_mod(input)                        # run original nn.Linear in BF16
+    measure_output((output,), self.observers.outputs)    # observer[0].measure(output)
+    return output
+```
+
+**PatchedMatmul** (2 inputs, 1 output):
+
+```
+# Pseudocode
+def forward_measure(self, input, other):
+    measure_input((input, other), self.observers.inputs) # observer[0].measure(input)
+                                                         # observer[1].measure(other)
+    output = self.orig_mod(input, other)                 # run original matmul in BF16
+    measure_output((output,), self.observers.outputs)
+    return output
+```
+
+The `measure_input` helper simply iterates and calls each observer:
+
+```
+# Pseudocode
+def measure_input(tensors, observers):
+    for i in range(len(observers)):
+        observers[i].measure(tensors[i])
+```
+
+### 10.5 Per-Tensor vs Per-Channel Observers
+
+This is where the granularity distinction (PTS vs PCS) lives at the code level.
+
+**MaxAbsObserver (Per-Tensor):**
+
+```
+# Pseudocode
+class MaxAbsObserver:
+    state = tensor([0.0])                    # shape: (1, 1) -- a single scalar
+
+    def measure(self, x):
+        self.state = max(self.state, max(|x|))   # global max over ALL elements
+```
+
+After N calibration batches, `state` holds the single largest absolute value ever seen across the entire tensor, across all batches. This becomes the basis for one scalar scale.
+
+**MaxAbsPerChannelObserver (Per-Channel):**
+
+```
+# Pseudocode
+class MaxAbsPerChannelObserver:
+    dim = ...                               # which axis is "channel"
+    state = tensor of zeros, shape (Nch, 1) # one value PER CHANNEL
+
+    def measure(self, x):
+        # Permute so channel dim is last, reshape to (-1, Nch)
+        x_2d = x.permute(...).reshape(-1, Nch)
+        per_ch_max = max(|x_2d|, dim=0)     # max over everything EXCEPT the channel dim
+        self.state = max(self.state, per_ch_max)  # running max per channel
+```
+
+After calibration, `state` has shape `(Nch, 1)` -- one maxabs value per channel. This becomes the basis for a vector of scales.
+
+The `dim` parameter depends on the module type and which tensor (input, output, weight) is being observed:
+
+| Module | Tensor | Channel dim | Meaning |
+|---|---|:---:|---|
+| Linear | input | -1 (last) | Per input feature |
+| Linear | weight | 0 (first) | Per output channel |
+| Matmul | input[0] | -1 (last) | Per last dim |
+| Matmul | input[1] | -2 (second-to-last) | Per second-to-last dim |
+
+### 10.6 From Measurements to Scales
+
+After calibration, the observer states (maxabs values) are saved to `.npz` files. During the QUANTIZE phase, these measurements are loaded and scales are computed.
+
+**Per-Tensor Scale (MaxAbsPts):**
+
+```
+# Pseudocode
+maxabs = measurement_value                    # scalar, from MaxAbsObserver
+scale = maxabs / (FP8_MAX * backoff)          # e.g., 12.5 / (448 * 0.5) = 0.0558
+scale = round(scale)                          # POW2, HW_ALIGNED, or IDENTITY
+```
+
+Result: a single scalar scale for the entire tensor.
+
+**Per-Channel Scale (MaxAbsPcs):**
+
+```
+# Pseudocode
+maxabs = measurement_vector                    # shape (Nch,), from MaxAbsPerChannelObserver
+scale = maxabs / (FP8_MAX * backoff)           # element-wise, shape (Nch,)
+scale = max(scale, epsilon)                    # prevent division by zero
+scale = round(scale)                           # applied element-wise
+```
+
+Result: a vector of scales, one per channel.
+
+### 10.7 Quantization at Inference Time
+
+During inference, the patched module's `forward_quant` uses the pre-computed scales to quantize inputs to FP8 and run the computation on hardware.
+
+**PatchedLinear.forward_quant:**
+
+```
+# Pseudocode
+def forward_quant(self, input):
+    qinput = self.quant_input(input)           # QuantInput: cast_to_fp8(input, 1/scale)
+    output = fp8_matmul(qinput, self.weight,   # both operands in FP8
+                        scale_input,            # for descaling in the accumulator
+                        scale_weight)
+    return output + bias
+```
+
+**PatchedMatmul.forward_quant:**
+
+```
+# Pseudocode
+def forward_quant(self, input, other):
+    qinput = self.quant_input_0(input)         # quantize first operand to FP8
+    qother = self.quant_input_1(other)         # quantize second operand to FP8
+    output = fp8_matmul(qinput, qother,
+                        scale_input, scale_other)
+    return output
+```
+
+The `QuantInput` class handles the actual casting:
+
+```
+# Pseudocode
+class QuantInput:
+    def __init__(self, scale_inv):
+        self.scale_inv = scale_inv              # = 1/scale
+        # For PCS: scale_inv has shape (Nch, 1), broadcasts across elements
+
+    def forward(self, x):
+        return cast_to_fp8(x, self.scale_inv)   # HPU op: hpu.cast_to_fp8_v2
+```
+
+For **PTS**, `scale_inv` is a scalar -- every element is divided by the same value before casting. For **PCS**, `scale_inv` has shape `(Nch, 1)` and PyTorch broadcasting divides each channel by its own scale.
+
+For **dynamic quantization**, the scale is computed on-the-fly instead of being pre-loaded:
+
+```
+# Pseudocode
+class QuantDynamicInput:
+    def forward(self, x):
+        scale = max(|x|) / (FP8_MAX * backoff)   # compute NOW from THIS tensor
+        scale = round_to_pow2(scale)
+        x_fp8 = cast_to_fp8(x, 1/scale)
+        return (x_fp8, scale)                      # scale travels with the data
+```
+
+### 10.8 The Complete Pipeline
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│ 1. PREPARATION (before calibration)                         │
+│                                                             │
+│   model.named_modules() → find Linear, Matmul, KVCache     │
+│   For each: create observers → create PatchedModule         │
+│   setattr(parent, name, PatchedModule)  ← MODULE REPLACED  │
+│   Measure weights immediately (they're static)              │
+└─────────────────────────────────────────────────────────────┘
+                          │
+                          ▼
+┌─────────────────────────────────────────────────────────────┐
+│ 2. MEASUREMENT (during calibration forward passes)          │
+│                                                             │
+│   PatchedLinear.forward_measure(input):                     │
+│     observer.measure(input)     ← PTS: max(|input|)        │
+│                                   PCS: max(|input|) per ch  │
+│     output = orig_linear(input)                             │
+│     observer.measure(output)                                │
+│                                                             │
+│   MaxAbsObserver:      state(1,1) → single scalar          │
+│   MaxAbsPerChannelObs: state(Nch,1) → one value per ch     │
+└─────────────────────────────────────────────────────────────┘
+                          │
+                          ▼
+┌─────────────────────────────────────────────────────────────┐
+│ 3. SCALE COMPUTATION (from saved measurements)              │
+│                                                             │
+│   PTS: scale = maxabs / (FP8_MAX × backoff)    → scalar     │
+│   PCS: scale = maxabs_per_ch / (FP8_MAX × backoff) → vector │
+│                                                             │
+│   Optional rounding: POW2, HW_ALIGNED, or IDENTITY          │
+└─────────────────────────────────────────────────────────────┘
+                          │
+                          ▼
+┌─────────────────────────────────────────────────────────────┐
+│ 4. QUANTIZED INFERENCE                                      │
+│                                                             │
+│   PatchedLinear.forward_quant(input):                       │
+│     qinput = cast_to_fp8(input, 1/scale)                    │
+│       PTS: single scale_inv for all elements                │
+│       PCS: scale_inv shape (Nch,1), broadcasts per channel  │
+│     output = fp8_matmul(qinput, qweight, scale_in, scale_wt)│
+│       → FP8 × FP8, accumulate in FP32, output BF16         │
+└─────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 🔀 11. Static vs Dynamic Quantization
+
+### 11.1 Static Quantization (Default)
 
 Scales for activations are computed **once during calibration** and reused for every inference call. The flow is:
 
@@ -598,7 +890,7 @@ def forward(x):
     return x_fp8
 ```
 
-### 10.2 Dynamic Quantization
+### 11.2 Dynamic Quantization
 
 Scales for activations are computed **on-the-fly from the actual input** at each inference call. No calibration data is needed:
 
@@ -619,7 +911,7 @@ def forward(x):
 | Risk of clipping unseen distributions | Yes (if inference data differs from calibration data) | No (adapts to each input) |
 | Throughput | Higher (no per-call overhead) | Lower (scale computation adds latency) |
 
-### 10.3 When to Use Which
+### 11.3 When to Use Which
 
 | Scenario | Recommendation |
 |----------|---------------|
@@ -628,7 +920,7 @@ def forward(x):
 | Quick experimentation, no calibration data available | **Dynamic** -- zero setup |
 | Calibration is expensive (huge model, limited data) | **Dynamic** -- skips calibration entirely |
 
-### 10.4 Enabling Dynamic Quantization in INC
+### 11.4 Enabling Dynamic Quantization in INC
 
 Set `"dynamic_quantization": true` in the config JSON and use one of the two dynamic-only scale methods:
 
@@ -659,11 +951,11 @@ Constraints: `scale_format` must be `CONST`, HW_ALIGNED rounding is not allowed 
 
 ---
 
-## 🚫 11. Layers Typically Excluded from Quantization
+## 🚫 12. Layers Typically Excluded from Quantization
 
 Not every layer in an LLM benefits from quantization. Certain layers are kept in BF16 because they are **numerically sensitive, make discrete decisions, or offer negligible compute savings**.
 
-### 11.1 Language Model Head (`lm_head`)
+### 12.1 Language Model Head (`lm_head`)
 
 The `lm_head` is the final linear layer projecting the hidden state to vocabulary logits (a vector of size `vocab_size`, e.g., 128,256). Token selection depends on **relative ordering and tiny magnitude differences** between logits:
 
@@ -676,7 +968,7 @@ FP8 E4M3 at this magnitude has a step size of ~0.03. Both values could snap to t
 
 The `lm_head` is a single layer (out of, say, 80 transformer layers) that runs once per generated token -- quantizing it saves negligible time but risks significant accuracy degradation.
 
-### 11.2 Attention Internals
+### 12.2 Attention Internals
 
 | Layer | Why Excluded |
 |-------|-------------|
@@ -685,22 +977,22 @@ The `lm_head` is a single layer (out of, say, 80 transformer layers) that runs o
 | **matmul_av** (Attention @ V) | Second input comes from KV cache with its own quantization constraints. Scale mismatches cause systematic errors. |
 | **fused_sdpa** | Fused scaled-dot-product attention -- same sensitivity as above. |
 
-### 11.3 KV Cache
+### 12.3 KV Cache
 
 Cached K/V values are reused across many generation steps. Quantization error in the cache is **permanent** -- once a K/V entry is stored with error, every subsequent token that attends to it sees that error, compounding over the sequence. In contrast, quantization error in a linear layer only affects the current token.
 
-### 11.4 MoE Gating (`mlp.gate`)
+### 12.4 MoE Gating (`mlp.gate`)
 
 The gate decides which expert(s) process each token. Its output is a small vector (e.g., 8 values for 8 experts), and top-k selection determines routing. A tiny FP8 rounding error can flip which experts are chosen, causing the token to be processed by entirely wrong experts -- a catastrophic error.
 
-### 11.5 Embedding and Normalization Layers
+### 12.5 Embedding and Normalization Layers
 
 | Layer | Why Usually Kept in BF16 |
 |-------|-------------------------|
 | **Embedding layers** | Lookup tables, not matmuls. No FP8 throughput benefit. |
 | **RMSNorm / LayerNorm** | Element-wise ops with few parameters. Normalize the distribution that all subsequent layers depend on -- small errors propagate everywhere. |
 
-### 11.6 General Principle
+### 12.6 General Principle
 
 Layers avoided from quantization share these traits:
 1. **Small compute cost** relative to the model (not bottlenecks)
@@ -711,11 +1003,11 @@ The layers that benefit most are the **large linear projections** (q_proj, k_pro
 
 ---
 
-## 🧊 12. MXFP4: Microscaling FP4
+## 🧊 13. MXFP4: Microscaling FP4
 
 MXFP4 (Microscaling FP4) is an emerging format from the **MX (Microscaling) specification**, published by a consortium including Microsoft, AMD, ARM, Intel, Meta, NVIDIA, and Qualcomm. It pushes quantization below 8 bits while maintaining usable accuracy through a novel scaling architecture.
 
-### 12.1 The FP4 Element (E2M1)
+### 13.1 The FP4 Element (E2M1)
 
 Each element is a 4-bit floating-point number:
 
@@ -732,7 +1024,7 @@ With 2 exponent bits and 1 mantissa bit, FP4 can represent only ~16 distinct val
 
 On its own, this is far too coarse for neural networks. The key to MXFP4 is the **shared exponent**.
 
-### 12.2 The Shared Exponent: What Makes MX Different
+### 13.2 The Shared Exponent: What Makes MX Different
 
 Instead of one scale per tensor (PTS) or per channel (PCS), MXFP4 uses **one scale per small block of elements** (typically 32):
 
@@ -746,7 +1038,7 @@ The shared exponent is stored in **E8M0 format** -- 8 exponent bits, 0 mantissa 
 
 $$\mathrm{blockScale} = 2^{(e_{\mathrm{stored}} - 127)}$$
 
-### 12.3 Why E8M0 (No Mantissa) for the Shared Exponent?
+### 13.3 Why E8M0 (No Mantissa) for the Shared Exponent?
 
 The shared exponent only needs to represent the **order of magnitude** of the block, not a precise value. The individual FP4 elements handle fine-grained value representation within that magnitude range.
 
@@ -760,7 +1052,7 @@ Individual FP4 (E2M1):   "within that ballpark, this element is 1.5x the ballpar
 
 Adding mantissa bits to the shared exponent would increase overhead while providing minimal benefit: FP4 elements are already so coarse (16 distinct values) that making the "ballpark" slightly more precise is not worth the extra bits. The maximum error from the shared exponent being a power of 2 (up to 2x off) only shifts the effective FP4 grid by about one step.
 
-### 12.4 How the Shared Exponent Is Calculated
+### 13.4 How the Shared Exponent Is Calculated
 
 ```
 Given a block of 32 elements: [v0, v1, ..., v31]
@@ -804,7 +1096,7 @@ Dequantize:
 
 </details>
 
-### 12.5 Memory Layout and Effective Bits
+### 13.5 Memory Layout and Effective Bits
 
 ```
 Each block:  32 × 4-bit elements  +  1 × 8-bit shared exponent
@@ -822,7 +1114,7 @@ Compare:
 | FP8 | 8 | 2x compression |
 | MXFP4 | 4.25 | ~3.8x compression |
 
-### 12.6 Why Block-Level Scaling Rescues FP4's Coarseness
+### 13.6 Why Block-Level Scaling Rescues FP4's Coarseness
 
 Consider 32 weight values ranging from $-0.03$ to $0.05$. Without scaling, FP4's smallest representable non-zero value is $0.5$ -- everything would round to $0$. With a block scale of $0.03125$ ($2^{-5}$):
 
@@ -834,11 +1126,11 @@ The shared exponent shifts FP4's representable range to match each block's local
 
 ---
 
-## 🔍 13. MXFP4 vs FP8: The Shared Exponent Difference
+## 🔍 14. MXFP4 vs FP8: The Shared Exponent Difference
 
 This is the most fundamental architectural distinction between the two formats.
 
-### 13.1 FP8: Each Element Is Self-Contained
+### 14.1 FP8: Each Element Is Self-Contained
 
 Every FP8 element carries its **own exponent** (4 or 5 bits). It can independently represent its magnitude:
 
@@ -853,7 +1145,7 @@ No neighboring elements are involved. The external scale (per-tensor or per-chan
 
 **The external scale is metadata about the tensor. It is NOT part of the data format.**
 
-### 13.2 MXFP4: Elements Are Incomplete Without the Shared Exponent
+### 14.2 MXFP4: Elements Are Incomplete Without the Shared Exponent
 
 Each FP4 element has only 2 exponent bits. It can only distinguish values in a tiny range (roughly $[0.5, 6.0]$). Without the shared exponent, FP4 is non-functional for real neural network values:
 
@@ -870,7 +1162,7 @@ But the ACTUAL value depends on the shared exponent:
 
 **The shared exponent IS part of the data encoding. Without it, values are uninterpretable.**
 
-### 13.3 Side-by-Side Comparison
+### 14.3 Side-by-Side Comparison
 
 Storing the value $0.0234375$:
 
@@ -901,13 +1193,13 @@ Actual value = 3.0 × 2^-7 = 0.0234375  (exact!)
 | Can you omit the scale? | Yes (if values fit in FP8's native range) | No (format is non-functional without it) |
 | HW reads scale | Once, at start of operation | Continuously, every 32 elements |
 
-### 13.4 Why the Different Designs
+### 14.4 Why the Different Designs
 
 **FP8 has enough exponent bits to be self-sufficient.** 4 exponent bits span a $2^{14} \approx 16{,}000\times$ dynamic range, covering most neural network tensors without external help.
 
 **FP4 has too few exponent bits to stand alone.** 2 exponent bits span only a $4\times$ dynamic range. Neural network values routinely span $1000\times$ or more. The shared exponent is architecturally mandatory. Making it per-block (32 elements) rather than per-tensor is the core insight of the MX format -- it gives fine-grained dynamic range adaptation at modest overhead.
 
-### 13.5 Why We Don't Count Scale Overhead for FP8
+### 14.5 Why We Don't Count Scale Overhead for FP8
 
 In FP8 with per-tensor scaling, there is **one 32-bit float** per entire tensor. For a $[4096, 4096]$ weight matrix:
 
@@ -923,7 +1215,7 @@ In MXFP4, the shared exponent is **woven into the data layout** -- one 8-bit exp
 
 ---
 
-## 📚 References
+## 📚 15. References
 
 - [FP8 Formats for Deep Learning (NVIDIA/ARM/Intel)](https://arxiv.org/abs/2209.05433)
 - [OCP Microscaling Formats (MX) Specification](https://www.opencompute.org/documents/ocp-microscaling-formats-mx-v1-0-spec-final-pdf)
