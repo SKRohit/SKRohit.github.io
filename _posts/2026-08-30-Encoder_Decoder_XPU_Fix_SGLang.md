@@ -7,7 +7,6 @@ categories: [attention, inference]
 tags: [sglang, xpu, kv-cache, flash-attention, whisper, encoder-decoder]
 math: true
 pin: true
----s: [sglang, xpu, kv-cache, flash-attention, whisper, encoder-decoder]
 ---
 
 *This post walks through a KV Cache misalignment issue for encoder–decoder models (Whisper, Llama-3.2-Vision/Mllama) on Intel XPU in SGLang. We will start our discussion with how SGLang manages its KV cache and then discuss the issue with possible fixes*
