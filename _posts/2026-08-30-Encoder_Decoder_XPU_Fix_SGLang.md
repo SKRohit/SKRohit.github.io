@@ -9,8 +9,6 @@ math: true
 pin: true
 ---
 
-*This post walks through a KV Cache misalignment issue for encoder–decoder models (Whisper, Llama-3.2-Vision/Mllama) on Intel XPU in SGLang. We will start our discussion with how SGLang manages its KV cache and then discuss the issue with possible fixes*
-
 ## Introduction
 
 Before we get to SGLang or XPU, it's worth grounding two ideas that the rest of this post leans on: the **KV cache** and **paged attention**. Almost everything about serving-time memory in a modern inference engine is built on these two.
